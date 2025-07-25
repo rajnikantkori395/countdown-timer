@@ -1,31 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
 
-  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-  
-  <title>Frontend Mentor | Launch countdown timer</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
 
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
-</head>
-<body>
+    <title>Frontend Mentor | Launch countdown timer</title>
 
-  We're launching soon
+    <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+    <style>
+      :root {
+        --grayish-blue: hsl(237, 18%, 59%);
+        --soft-red: hsl(345, 95%, 68%);
+        --white: hsl(0, 0%, 100%);
+        --dark-desaturated-blue: hsl(236, 21%, 26%);
+        --very-dark-blue: hsl(235, 16%, 14%);
+        --very-dark-mostly-black-blue: hsl(234, 17%, 12%);
+      }
 
-  Days
-  Hours
-  Minutes
-  Seconds
-  
-  <div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name Here</a>.
-  </div>
-</body>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Red Hat Text", sans-serif;
+        background: url("./images/bg-stars.svg"),
+          linear-gradient(
+            to bottom,
+            var(--very-dark-blue),
+            var(--very-dark-mostly-black-blue)
+          );
+        background-repeat: no-repeat;
+        background-size: cover;
+        color: var(--white);
+        display: flex;
+
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        height: 100vh;
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+        margin-bottom: 3rem;
+        color: var(--white);
+        letter-spacing: 5px;
+        text-transform: uppercase;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+      }
+
+      .hills {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 21%;
+        object-fit: cover;
+        object-position: right;
+        z-index: -1;
+      }
+
+      .countdown-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        justify-content: flex-end;
+        height: 50%;
+      }
+
+      .countdown {
+        display: flex;
+        gap: 0.4rem;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .number {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .flip-card-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        gap: 0.8rem;
+      }
+
+      .flip-card {
+        background-color: var(--dark-desaturated-blue);
+        border-radius: 4px;
+        padding: 20px 10px;
+        width: 80px;
+        height: 80px;
+        box-shadow: 0 9px 0 var(--very-dark-mostly-black-blue);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        transform-style: preserve-3d;
+        transition: transform 0.6s ease-in-out;
+      }
+
+      .flip-card.flipping {
+        transform: rotateX(180deg);
+      }
+
+      .flip-card-front,
+      .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .flip-card-back {
+        transform: rotateX(180deg);
+      }
+
+      .flip-card-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background-color: var(--very-dark-mostly-black-blue);
+        opacity: 0.4;
+        z-index: 1;
+        border-radius: 4px 4px 0 0;
+      }
+
+      .flip-card-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background-color: var(--dark-desaturated-blue);
+      }
+
+      .flip-card span {
+        font-size: 2.5rem;
+        color: var(--soft-red);
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      .label {
+        font-size: 0.5rem;
+        margin-top: 0.5rem;
+        color: var(--grayish-blue);
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .divider {
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0.5);
+        top: 50%;
+        left: 0;
+        z-index: 1;
+      }
+
+      footer {
+        margin-top: 4rem;
+      }
+
+      .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+
+      .social-icons img:hover,
+      .social-icons img:focus {
+        filter: brightness(0) saturate(100%) invert(63%) sepia(54%)
+          saturate(5458%) hue-rotate(325deg) brightness(101%) contrast(101%);
+      }
+
+      .social-icons a {
+        color: var(--grayish-blue);
+        font-size: 1.25rem;
+        transition: color 0.3s ease;
+      }
+
+      .social-icons a:active {
+        color: var(--soft-red);
+      }
+
+      .cut-circle {
+        position: absolute;
+        left: -5px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background-color: var(--very-dark-blue);
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .right {
+        right: -5px;
+        left: auto;
+      }
+
+      .cut-circle-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      @media (min-width: 768px) {
+        .hills {
+          object-fit: contain;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          object-position: bottom;
+        }
+
+        .countdown {
+          display: flex;
+          gap: 2rem;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+
+        .countdown-section {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 100px;
+          height: 60%;
+        }
+
+        .flip-card {
+          border-radius: 10px;
+          transform-style: preserve-3d;
+          transition: transform 0.6s ease-in-out;
+        }
+
+        .flip-card.flipping {
+          transform: rotateX(180deg);
+        }
+
+        .flip-card-top {
+          border-radius: 10px 10px 0 0;
+        }
+
+        .flip-card span {
+          font-size: 3.5rem;
+          color: var(--soft-red);
+          line-height: 1;
+        }
+
+        .label {
+          font-size: 0.89rem;
+          margin-top: 0.5rem;
+          color: var(--grayish-blue);
+          letter-spacing: 5px;
+          text-transform: uppercase;
+          font-weight: 700;
+        }
+
+        h1 {
+          font-size: 2rem;
+          margin-bottom: 3rem;
+          color: var(--white);
+          letter-spacing: 5px;
+          text-transform: uppercase;
+        }
+
+        .flip-card {
+          width: 160px;
+          height: 160px;
+        }
+
+        .flip-card span {
+          font-size: 5rem;
+          font-weight: 700;
+        }
+
+        .cut-circle {
+          position: absolute;
+          left: -9px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 18px;
+          height: 18px;
+          background-color: var(--very-dark-blue);
+          border-radius: 50%;
+          z-index: 1;
+        }
+
+        .right {
+          right: -9px;
+          left: auto;
+        }
+
+        .cut-circle-container {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .attribution {
+        font-size: 11px;
+        text-align: center;
+      }
+      .attribution a {
+        color: hsl(228, 45%, 44%);
+      }
+    </style>
+  </head>
+  <body>
+    <img class="hills" src="./images/pattern-hills.svg" alt="hills" />
+    <div class="container">
+      <section class="countdown-section">
+        <h1>WE'RE LAUNCHING SOON</h1>
+        <div class="countdown">
+          <div class="flip-card-container">
+            <div class="flip-card" id="days-card">
+              <div class="flip-card-front">
+                <span class="number" id="days">14</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+              <div class="flip-card-back">
+                <span class="number" id="days-back">14</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+            </div>
+            <div class="label">DAYS</div>
+          </div>
+          <div class="flip-card-container">
+            <div class="flip-card" id="hours-card">
+              <div class="flip-card-front">
+                <span class="number" id="hours">00</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+              <div class="flip-card-back">
+                <span class="number" id="hours-back">00</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+            </div>
+            <div class="label">HOURS</div>
+          </div>
+          <div class="flip-card-container">
+            <div class="flip-card" id="minutes-card">
+              <div class="flip-card-front">
+                <span class="number" id="minutes">00</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+              <div class="flip-card-back">
+                <span class="number" id="minutes-back">00</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+            </div>
+            <div class="label">MINUTES</div>
+          </div>
+          <div class="flip-card-container">
+            <div class="flip-card" id="seconds-card">
+              <div class="flip-card-front">
+                <span class="number" id="seconds">00</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+              <div class="flip-card-back">
+                <span class="number" id="seconds-back">00</span>
+                <div class="flip-card-top"></div>
+                <div class="divider"></div>
+                <div class="cut-circle"></div>
+                <div class="cut-circle right"></div>
+              </div>
+            </div>
+            <div class="label">SECONDS</div>
+          </div>
+        </div>
+      </section>
+      <footer>
+        <div class="social-icons">
+          <a
+            target="_blank"
+            href="https://www.facebook.com/profile.php?id=100000000000000"
+            ><img src="./images/icon-facebook.svg" alt="facebook"
+          /></a>
+          <a target="_blank" href="https://www.pinterest.com/profile/name/"
+            ><img src="./images/icon-pinterest.svg" alt="pinterest"
+          /></a>
+          <a target="_blank" href="https://www.instagram.com/profile/name/"
+            ><img src="./images/icon-instagram.svg" alt="instagram"
+          /></a>
+        </div>
+      </footer>
+    </div>
+    <!-- <div class="attribution">
+      Challenge by
+      <a href="https://www.frontendmentor.io?ref=challenge" target="_blank"
+        >Frontend Mentor</a
+      >. Coded by <a href="#">Your Name Here</a>.
+    </div> -->
+
+    <script>
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + 14);
+
+      // Store previous values to detect changes
+      let previousValues = {
+        days: "14",
+        hours: "00",
+        minutes: "00",
+        seconds: "00",
+      };
+
+      function flipCard(cardId, newValue) {
+        const card = document.getElementById(cardId);
+        const frontNumber = document.getElementById(
+          cardId.replace("-card", "")
+        );
+        const backNumber = document.getElementById(
+          cardId.replace("-card", "-back")
+        );
+
+        // Update the back number with the new value
+        backNumber.textContent = newValue;
+
+        // Add flipping class to trigger animation
+        card.classList.add("flipping");
+
+        // After animation completes, update front and remove flipping class
+        setTimeout(() => {
+          frontNumber.textContent = newValue;
+          card.classList.remove("flipping");
+        }, 300);
+      }
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = endDate - now;
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        const newDays = String(days).padStart(2, "0");
+        const newHours = String(hours).padStart(2, "0");
+        const newMinutes = String(minutes).padStart(2, "0");
+        const newSeconds = String(seconds).padStart(2, "0");
+
+        // Check if values changed and trigger flip animation
+        if (newDays !== previousValues.days) {
+          flipCard("days-card", newDays);
+          previousValues.days = newDays;
+        }
+
+        if (newHours !== previousValues.hours) {
+          flipCard("hours-card", newHours);
+          previousValues.hours = newHours;
+        }
+
+        if (newMinutes !== previousValues.minutes) {
+          flipCard("minutes-card", newMinutes);
+          previousValues.minutes = newMinutes;
+        }
+
+        if (newSeconds !== previousValues.seconds) {
+          flipCard("seconds-card", newSeconds);
+          previousValues.seconds = newSeconds;
+        }
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    </script>
+  </body>
 </html>
